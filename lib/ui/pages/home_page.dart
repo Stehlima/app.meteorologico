@@ -263,7 +263,7 @@ class _HomePageState extends State<HomePage> {
           endIndent: 16,
         ),
         itemBuilder: (_, i) => ListTile(
-          leading: const Icon(Icons.location_city_rounded, color: AppTheme.skyBlue, size: 18),
+          leading: const Icon(Icons.location_city_rounded, color: AppTheme.midOcean, size: 18),
           title: Text(
             filtered[i],
             style: const TextStyle(color: AppTheme.white, fontSize: 14),
@@ -304,7 +304,7 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline_rounded, color: AppTheme.iceBlue, size: 16),
+          const Icon(Icons.info_outline_rounded, color: AppTheme.lightLilac, size: 16),
           const SizedBox(width: 10),
           Expanded(
             child: Text(

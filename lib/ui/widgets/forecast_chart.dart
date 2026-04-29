@@ -155,14 +155,14 @@ class ForecastChart extends StatelessWidget {
                         .toList(),
                     isCurved: true,
                     curveSmoothness: 0.35,
-                    color: AppTheme.iceBlue.withValues(alpha: 0.7),
+                    color: AppTheme.lightLilac.withValues(alpha: 0.7),
                     barWidth: 2,
                     dashArray: [6, 4],
                     dotData: FlDotData(
                       show: true,
                       getDotPainter: (spot, percent, bar, index) => FlDotCirclePainter(
                         radius: 3,
-                        color: AppTheme.iceBlue,
+                        color: AppTheme.lightLilac,
                         strokeColor: AppTheme.oceanBlue,
                         strokeWidth: 1.5,
                       ),
@@ -180,7 +180,7 @@ class ForecastChart extends StatelessWidget {
             children: [
               _legendItem(AppTheme.white, '— Máxima'),
               const SizedBox(width: 24),
-              _legendItem(AppTheme.iceBlue.withValues(alpha: 0.85), '- - Mínima'),
+              _legendItem(AppTheme.lightLilac.withValues(alpha: 0.85), '- - Mínima'),
             ],
           ),
         ],

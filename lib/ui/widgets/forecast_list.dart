@@ -70,7 +70,7 @@ class ForecastList extends StatelessWidget {
               ),
             ),
           ),
-          Icon(_getIcon(day.condition), color: AppTheme.iceBlue, size: 20),
+          Icon(_getIcon(day.condition), color: AppTheme.lightLilac, size: 20),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -97,7 +97,7 @@ class ForecastList extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(2),
               gradient: const LinearGradient(
-                colors: [AppTheme.iceBlue, AppTheme.white],
+                colors: [AppTheme.lightLilac, AppTheme.white],
               ),
             ),
           ),
