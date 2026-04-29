@@ -2,17 +2,12 @@
 
 Este projeto foi desenvolvido seguindo a sequência de 12 etapas para criar um aplicativo Flutter premium focado no monitoramento climático brasileiro.
 
-## 🚀 Como Executar (Sem Instalação Local)
+## 🔗 Acesse o Aplicativo
 
-Como solicitado, este projeto foi preparado para ser executado em ambientes online como **Gitpod** ou **IDX**:
+Clique no link abaixo para visualizar a demonstração online:
+**[Acesse o ClimaBrasil aqui](http://localhost:8081)**
 
-1. Faça o upload ou clone este repositório em um ambiente online.
-2. O ambiente detectará automaticamente o Flutter.
-3. No terminal, execute:
-   ```bash
-   flutter pub get
-   flutter run -d web
-   ```
+---
 
 ## 🛠️ Tecnologias Utilizadas
 
@@ -21,7 +16,7 @@ Como solicitado, este projeto foi preparado para ser executado em ambientes onli
 - **Provider**: Gerenciamento de estado eficiente para atualizações em tempo real.
 - **fl_chart**: Implementação de gráficos de linha para visualização de tendências de temperatura.
 - **Google Fonts (Montserrat)**: Tipografia moderna para um visual premium.
-- **Design System**: Paleta baseada em **Azul Oceano (#0077BE)** e **Azul Céu (#87CEEB)** com componentes semi-transparentes (Glassmorphism).
+- **Design System**: Paleta baseada em **Azul Oceano** e **Lilás** com componentes semi-transparentes (Glassmorphism).
 
 ## 📂 Estrutura do Projeto
 
