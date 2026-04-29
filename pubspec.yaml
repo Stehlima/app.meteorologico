@@ -1,0 +1,26 @@
+name: climabrasil
+description: Aplicativo de clima focado no Brasil com design premium.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.4.0
+  provider: ^6.1.5
+  fl_chart: ^0.70.2
+  intl: ^0.20.2
+  google_fonts: ^6.2.1
+  supabase_flutter: ^2.8.4
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
