@@ -4,8 +4,8 @@ Este projeto foi desenvolvido seguindo a sequência de 12 etapas para criar um a
 
 ## 🔗 Acesse o Aplicativo
 
-Clique no link abaixo para visualizar a demonstração online:
-**[Acesse o ClimaBrasil aqui](http://localhost:8081)**
+Clique no link abaixo para visualizar a demonstração online (HTTPS):
+**[Acesse o ClimaBrasil aqui](https://Stehlima.github.io/app.meteorologico/)**
 
 ---
 
