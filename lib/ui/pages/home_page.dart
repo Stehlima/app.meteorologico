@@ -5,6 +5,11 @@ import '../../data/providers/weather_provider.dart';
 import '../widgets/weather_card.dart';
 import '../widgets/forecast_chart.dart';
 import '../widgets/forecast_list.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -132,9 +137,17 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               WeatherCard(weather: provider.weather!),
                               const SizedBox(height: 20),
+                              _buildActionButtons(provider.weather!),
+                              const SizedBox(height: 20),
                               ForecastChart(forecast: provider.weather!.forecast),
                               const SizedBox(height: 20),
                               ForecastList(forecast: provider.weather!.forecast),
+                              const SizedBox(height: 20),
+                              _buildSatelliteCard(),
+                              const SizedBox(height: 20),
+                              _buildMapCard(provider.weather!),
+                              const SizedBox(height: 20),
+                              _buildExtraWidgets(),
                               const SizedBox(height: 20),
                               _buildDemoNotice(),
                             ],
@@ -190,6 +203,11 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ],
+              ),
+              const Spacer(),
+              IconButton(
+                icon: const Icon(Icons.settings_outlined, color: AppTheme.white),
+                onPressed: _showSettingsModal,
               ),
             ],
           ),
@@ -290,6 +308,233 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildActionButtons(WeatherModel weather) {
+    return Row(
+      children: [
+        Expanded(
+          child: _actionButton(
+            icon: Icons.share_rounded,
+            label: 'Compartilhar',
+            onTap: () {
+              Share.share(
+                'Confira o clima em ${weather.city}: ${weather.temp}°C, ${weather.description}. Baixe o ClimaBrasil!',
+              );
+            },
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _actionButton(
+            icon: Icons.notifications_active_outlined,
+            label: 'Alertas',
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Notificações de alertas configuradas!')),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _actionButton({required IconData icon, required String label, required VoidCallback onTap}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: AppTheme.glassWhite,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppTheme.glassBorder),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: AppTheme.white, size: 20),
+            const SizedBox(width: 8),
+            Text(label, style: const TextStyle(color: AppTheme.white, fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSatelliteCard() {
+    return _sectionCard(
+      title: 'Satélite (GOES-16)',
+      icon: Icons.satellite_alt_rounded,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: CachedNetworkImage(
+          imageUrl: 'https://servicos.cptec.inpe.br/repositorio/tempo/satelite/brasil/goes16/ultimas_v/goes16_br_ir.jpg',
+          placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMapCard(WeatherModel weather) {
+    // Nota: Em um app real, buscaríamos as coordenadas reais da cidade.
+    // Aqui usaremos coordenadas genéricas para o exemplo se não estiverem no model.
+    return _sectionCard(
+      title: 'Mapa de Localização',
+      icon: Icons.map_rounded,
+      height: 300,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: FlutterMap(
+          options: const MapOptions(
+            initialCenter: LatLng(-23.5505, -46.6333), // SP default
+            initialZoom: 9.2,
+          ),
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'com.example.app',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExtraWidgets() {
+    return Row(
+      children: [
+        Expanded(
+          child: _smallInfoCard(
+            title: 'Fase da Lua',
+            value: 'Crescente',
+            icon: FontAwesomeIcons.moon,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _smallInfoCard(
+            title: 'Ondas (Litoral)',
+            value: '1.2m - Calmo',
+            icon: FontAwesomeIcons.water,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _smallInfoCard({required String title, required String value, required IconData icon}) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.glassWhite,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppTheme.glassBorder),
+      ),
+      child: Column(
+        children: [
+          FaIcon(icon, color: AppTheme.white, size: 24),
+          const SizedBox(height: 12),
+          Text(title, style: TextStyle(color: AppTheme.white.withValues(alpha: 0.6), fontSize: 10)),
+          Text(value, style: const TextStyle(color: AppTheme.white, fontWeight: FontWeight.bold, fontSize: 14)),
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionCard({required String title, required IconData icon, required Widget child, double? height}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.glassWhite,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppTheme.glassBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: AppTheme.white, size: 18),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: const TextStyle(color: AppTheme.white, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          SizedBox(height: height, child: child),
+        ],
+      ),
+    );
+  }
+
+  void _showSettingsModal() {
+    double tempUnit = 0; // 0 para Celsius, 1 para Fahrenheit (Slider demo)
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.deepOcean,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Configurações',
+                style: TextStyle(color: AppTheme.white, fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 32),
+              const Text(
+                'Unidade de Medida (Celsius vs Fahrenheit)',
+                style: TextStyle(color: AppTheme.textLight, fontSize: 14),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  const Text('°C', style: TextStyle(color: AppTheme.white)),
+                  Expanded(
+                    child: Slider(
+                      value: tempUnit,
+                      min: 0,
+                      max: 1,
+                      divisions: 1,
+                      activeColor: AppTheme.lightLilac,
+                      onChanged: (v) {
+                        setModalState(() => tempUnit = v);
+                      },
+                    ),
+                  ),
+                  const Text('°F', style: TextStyle(color: AppTheme.white)),
+                ],
+              ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.oceanBlue,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  ),
+                  child: const Text('Salvar Preferências'),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
