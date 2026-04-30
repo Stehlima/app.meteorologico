@@ -378,13 +378,13 @@ class _HomePageState extends State<HomePage> {
           decoration: BoxDecoration(
             color: Colors.black.withValues(alpha: 0.2),
             image: const DecorationImage(
-              image: NetworkImage('https://www.inmet.gov.br/portal/images/radar/radar_br.png'),
+              image: NetworkImage('https://wttr.in/_0pq.png'),
               fit: BoxFit.cover,
             ),
           ),
           child: Center(
             child: Text(
-              'Radar Nacional (INMET)',
+              'Radar Global (Real-time)',
               style: TextStyle(color: AppTheme.white.withValues(alpha: 0.5), fontSize: 10),
             ),
           ),
