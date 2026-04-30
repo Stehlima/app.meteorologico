@@ -11,6 +11,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'dart:html' as html;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -35,10 +38,47 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<WeatherProvider>().searchCity('São Paulo');
+      _checkForUpdates();
     });
     _searchFocus.addListener(() {
       setState(() => _showSuggestions = _searchFocus.hasFocus);
     });
+  }
+
+  Future<void> _checkForUpdates() async {
+    try {
+      await Future.delayed(const Duration(seconds: 3));
+      final response = await http.get(Uri.parse('version.json'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['version'] != "1.0.0" && mounted) {
+          _showUpdateBanner();
+        }
+      }
+    } catch (e) { }
+  }
+
+  void _showUpdateBanner() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Row(
+          children: [
+            Icon(Icons.system_update_rounded, color: Colors.white),
+            SizedBox(width: 12),
+            Text('Nova versão disponível!'),
+          ],
+        ),
+        duration: const Duration(days: 1),
+        backgroundColor: AppTheme.oceanBlue,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(20),
+        action: SnackBarAction(
+          label: 'ATUALIZAR',
+          textColor: Colors.white,
+          onPressed: () => html.window.location.reload(),
+        ),
+      ),
+    );
   }
 
   @override
