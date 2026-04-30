@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../data/models/weather_model.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/providers/weather_provider.dart';
 import '../widgets/weather_card.dart';
