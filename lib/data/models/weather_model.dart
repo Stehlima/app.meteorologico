@@ -1,7 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-// Removi o 'part' para evitar erro de compilação no GitHub Actions
-// já que estamos usando implementação manual abaixo.
+part 'weather_model.g.dart';
 
 @JsonSerializable()
 class WeatherModel {
@@ -95,61 +94,3 @@ class ForecastDay {
   factory ForecastDay.fromJson(Map<String, dynamic> json) => _$ForecastDayFromJson(json);
   Map<String, dynamic> toJson() => _$ForecastDayToJson(this);
 }
-
-// Implementação manual
-WeatherModel _$WeatherModelFromJson(Map<String, dynamic> json) {
-  final results = json['results'] != null ? json['results'] as Map<String, dynamic> : json;
-  return WeatherModel(
-    temp: (results['temp'] as num).toInt(),
-    date: results['date'] as String,
-    time: results['time'] as String,
-    description: results['description'] as String,
-    city: results['city'] as String? ?? 'Desconhecida',
-    humidity: (results['humidity'] as num).toInt(),
-    windSpeedy: results['wind_speedy'] as String,
-    sunrise: results['sunrise'] as String,
-    sunset: results['sunset'] as String,
-    conditionSlug: results['condition_slug'] as String? ?? '',
-    currentlyCondition: results['currently'] as String? ?? 'dia',
-    moonPhase: results['moon_phase'] as String? ?? 'Crescente',
-    surfCondition: results['surf_condition'] as String? ?? 'Calmo',
-    forecast: (results['forecast'] as List<dynamic>)
-        .map((e) => ForecastDay.fromJson(e as Map<String, dynamic>))
-        .toList(),
-  );
-}
-
-Map<String, dynamic> _$WeatherModelToJson(WeatherModel instance) => <String, dynamic>{
-      'temp': instance.temp,
-      'date': instance.date,
-      'time': instance.time,
-      'description': instance.description,
-      'city': instance.city,
-      'humidity': instance.humidity,
-      'wind_speedy': instance.windSpeedy,
-      'sunrise': instance.sunrise,
-      'sunset': instance.sunset,
-      'condition_slug': instance.conditionSlug,
-      'currently': instance.currentlyCondition,
-      'forecast': instance.forecast,
-      'moon_phase': instance.moonPhase,
-      'surf_condition': instance.surfCondition,
-    };
-
-ForecastDay _$ForecastDayFromJson(Map<String, dynamic> json) => ForecastDay(
-      date: json['date'] as String,
-      weekday: json['weekday'] as String,
-      max: (json['max'] as num).toInt(),
-      min: (json['min'] as num).toInt(),
-      description: json['description'] as String,
-      condition: json['condition'] as String,
-    );
-
-Map<String, dynamic> _$ForecastDayToJson(ForecastDay instance) => <String, dynamic>{
-      'date': instance.date,
-      'weekday': instance.weekday,
-      'max': instance.max,
-      'min': instance.min,
-      'description': instance.description,
-      'condition': instance.condition,
-    };
