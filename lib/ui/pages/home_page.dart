@@ -148,8 +148,6 @@ class _HomePageState extends State<HomePage> {
                               _buildMapCard(provider.weather!),
                               const SizedBox(height: 20),
                               _buildExtraWidgets(),
-                              const SizedBox(height: 20),
-                              _buildDemoNotice(),
                             ],
                           ),
                         ),
@@ -539,30 +537,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildDemoNotice() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppTheme.glassWhite,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.glassBorder),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.info_outline_rounded, color: AppTheme.lightLilac, size: 16),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              'Modo demonstração ativo. Configure sua chave HG Brasil em weather_service.dart para dados reais.',
-              style: TextStyle(
-                color: AppTheme.white.withValues(alpha: 0.65),
-                fontSize: 11,
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
