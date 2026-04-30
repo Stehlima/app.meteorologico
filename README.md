@@ -15,6 +15,9 @@ Clique no link abaixo para visualizar a demonstração online (HTTPS):
 - **HG Brasil Weather API**: Escolhida por ser uma API nacional robusta com dados precisos de cidades brasileiras.
 - **Provider**: Gerenciamento de estado eficiente para atualizações em tempo real.
 - **fl_chart**: Implementação de gráficos de linha para visualização de tendências de temperatura.
+- **Flutter Map (OSM)**: Visualização geográfica das cidades brasileiras.
+- **Satellite Imagery (CPTEC/INPE)**: Integração com o satélite GOES-16 para visualização de radar.
+- **Share Plus**: Funcionalidade de compartilhamento social dos dados climáticos.
 - **Google Fonts (Montserrat)**: Tipografia moderna para um visual premium.
 - **Design System**: Paleta baseada em **Azul Oceano** e **Lilás** com componentes semi-transparentes (Glassmorphism).
 
@@ -32,3 +35,7 @@ O projeto inclui o `DatabaseService` preparado para integração com **Supabase*
 
 ## 🎨 Design Premium
 O aplicativo utiliza gradientes dinâmicos e cartões com efeito de vidro para proporcionar uma experiência de usuário de alto nível, fugindo do padrão básico de aplicativos de clima.
+
+## 🧪 Testes Unitários
+Implementamos testes automatizados para validar a modelagem de dados e a integração com APIs, garantindo a estabilidade das futuras atualizações. Para rodar:
+`flutter test`
