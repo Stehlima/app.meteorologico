@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'weather_model.g.dart';
+// Removi o 'part' para evitar erro de compilação no GitHub Actions
+// já que estamos usando implementação manual abaixo.
 
 @JsonSerializable()
 class WeatherModel {
@@ -20,7 +21,6 @@ class WeatherModel {
   final String currentlyCondition;
   final List<ForecastDay> forecast;
   
-  // Novos campos para Etapa 11
   @JsonKey(defaultValue: 'Crescente')
   final String moonPhase;
   @JsonKey(defaultValue: 'Calmo')
@@ -46,7 +46,6 @@ class WeatherModel {
   factory WeatherModel.fromJson(Map<String, dynamic> json) => _$WeatherModelFromJson(json);
   Map<String, dynamic> toJson() => _$WeatherModelToJson(this);
 
-  /// Dados simulados para demonstração
   factory WeatherModel.mock({String cityName = 'São Paulo'}) {
     return WeatherModel(
       temp: 28,
@@ -97,7 +96,7 @@ class ForecastDay {
   Map<String, dynamic> toJson() => _$ForecastDayToJson(this);
 }
 
-// Implementação manual dos métodos gerados (já que não podemos rodar o build_runner aqui agora)
+// Implementação manual
 WeatherModel _$WeatherModelFromJson(Map<String, dynamic> json) {
   final results = json['results'] != null ? json['results'] as Map<String, dynamic> : json;
   return WeatherModel(
