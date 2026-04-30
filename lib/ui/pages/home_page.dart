@@ -149,6 +149,9 @@ class _HomePageState extends State<HomePage> {
                               _buildMapCard(provider.weather!),
                               const SizedBox(height: 20),
                               _buildExtraWidgets(),
+                              const SizedBox(height: 40),
+                              _buildFooter(),
+                              const SizedBox(height: 10),
                             ],
                           ),
                         ),
@@ -366,23 +369,31 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildSatelliteCard() {
     return _sectionCard(
-      title: 'Satélite (GOES-16)',
-      icon: Icons.satellite_alt_rounded,
+      title: 'Radar Meteorológico',
+      icon: Icons.radar_rounded,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: CachedNetworkImage(
-          imageUrl: 'https://servicos.cptec.inpe.br/repositorio/tempo/satelite/brasil/goes16/ultimas_v/goes16_br_ir.jpg',
-          placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
-          fit: BoxFit.cover,
+        child: Container(
+          height: 200,
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.2),
+            image: const DecorationImage(
+              image: NetworkImage('https://www.inmet.gov.br/portal/images/radar/radar_br.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Center(
+            child: Text(
+              'Radar Nacional (INMET)',
+              style: TextStyle(color: AppTheme.white.withValues(alpha: 0.5), fontSize: 10),
+            ),
+          ),
         ),
       ),
     );
   }
 
   Widget _buildMapCard(WeatherModel weather) {
-    // Nota: Em um app real, buscaríamos as coordenadas reais da cidade.
-    // Aqui usaremos coordenadas genéricas para o exemplo se não estiverem no model.
     return _sectionCard(
       title: 'Mapa de Localização',
       icon: Icons.map_rounded,
@@ -390,18 +401,56 @@ class _HomePageState extends State<HomePage> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: FlutterMap(
-          options: const MapOptions(
-            initialCenter: LatLng(-23.5505, -46.6333), // SP default
-            initialZoom: 9.2,
+          key: ValueKey('${weather.lat}-${weather.lon}'),
+          options: MapOptions(
+            initialCenter: LatLng(weather.lat, weather.lon),
+            initialZoom: 10,
           ),
           children: [
             TileLayer(
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
               userAgentPackageName: 'com.example.app',
             ),
+            MarkerLayer(
+              markers: [
+                Marker(
+                  point: LatLng(weather.lat, weather.lon),
+                  width: 40,
+                  height: 40,
+                  child: const Icon(Icons.location_on, color: Colors.red, size: 40),
+                ),
+              ],
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildFooter() {
+    return Column(
+      children: [
+        Container(
+          height: 1,
+          width: 100,
+          color: AppTheme.white.withValues(alpha: 0.2),
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          'Desenvolvido por',
+          style: TextStyle(color: AppTheme.textLight, fontSize: 10),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          'Stephany Lima de Mattos',
+          style: TextStyle(
+            color: AppTheme.white,
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+          ),
+        ),
+      ],
     );
   }
 

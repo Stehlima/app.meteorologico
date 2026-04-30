@@ -4,13 +4,10 @@ import 'package:intl/intl.dart';
 import '../models/weather_model.dart';
 
 class WeatherService {
-  // Chave de exemplo (em um app real, o usuário forneceria a sua ou seria via backend)
-  static const String _hgBrasilKey = '7f9c2d1b'; // Exemplo de chave
+  static const String _hgBrasilKey = '7f9c2d1b';
 
-  /// Busca dados climáticos de uma fonte nacional (HG Brasil) ou internacional (Open-Meteo)
   Future<WeatherModel> fetchWeatherByCity(String cityName) async {
     try {
-      // Prioridade: API Nacional HG Brasil (Etapa 2)
       final hgUri = Uri.parse(
           'https://api.hgbrasil.com/weather?key=$_hgBrasilKey&city_name=${Uri.encodeComponent(cityName)}&format=json-array');
       
@@ -19,14 +16,12 @@ class WeatherService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data != null && data['results'] != null) {
+          // A HG Brasil já retorna lat/lon no campo results
           return WeatherModel.fromJson(data);
         }
       }
-      
-      // Fallback para Open-Meteo se a API nacional falhar ou a chave expirar
       return _fetchFromOpenMeteo(cityName);
     } catch (e) {
-      // Se falhar tudo, tenta o fallback
       return _fetchFromOpenMeteo(cityName);
     }
   }
@@ -44,8 +39,8 @@ class WeatherService {
       if (results == null || results.isEmpty) throw Exception('Cidade não encontrada');
 
       final cityData = results[0];
-      final lat = cityData['latitude'];
-      final lon = cityData['longitude'];
+      final lat = cityData['latitude'] as double;
+      final lon = cityData['longitude'] as double;
       final resolvedCityName = '${cityData['name']}, ${cityData['admin1'] ?? cityData['country']}';
 
       final weatherUri = Uri.parse(
@@ -54,24 +49,13 @@ class WeatherService {
 
       if (weatherResponse.statusCode != 200) throw Exception('Erro clima');
 
-      return _mapOpenMeteoToWeatherModel(json.decode(weatherResponse.body), resolvedCityName);
+      return _mapOpenMeteoToWeatherModel(json.decode(weatherResponse.body), resolvedCityName, lat, lon);
     } catch (e) {
-      throw Exception('Falha na conexão com as APIs: $e');
+      throw Exception('Falha na conexão: $e');
     }
   }
 
-  Future<WeatherModel> fetchWeatherByCoordinates(double lat, double lon) async {
-    try {
-      final weatherUri = Uri.parse(
-          'https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto');
-      final response = await http.get(weatherUri).timeout(const Duration(seconds: 10));
-      return _mapOpenMeteoToWeatherModel(json.decode(response.body), 'Localização Atual');
-    } catch (e) {
-      throw Exception('Falha ao obter clima por localização: $e');
-    }
-  }
-
-  WeatherModel _mapOpenMeteoToWeatherModel(Map<String, dynamic> data, String cityName) {
+  WeatherModel _mapOpenMeteoToWeatherModel(Map<String, dynamic> data, String cityName, double lat, double lon) {
     final current = data['current'];
     final daily = data['daily'];
     final now = DateTime.now();
@@ -100,26 +84,13 @@ class WeatherService {
       sunset: daily['sunset'][0].toString().split('T').last,
       conditionSlug: _getSlug(current['weather_code']),
       currentlyCondition: now.hour > 6 && now.hour < 18 ? 'dia' : 'noite',
+      lat: lat,
+      lon: lon,
       forecast: forecast,
     );
   }
 
-  String _getWeekday(int w) {
-    return ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][w % 7];
-  }
-
-  String _getDesc(int code) {
-    if (code == 0) return 'Tempo limpo';
-    if (code < 4) return 'Parcialmente nublado';
-    if (code < 50) return 'Neblina';
-    if (code < 70) return 'Chuva';
-    return 'Nublado';
-  }
-
-  String _getSlug(int code) {
-    if (code == 0) return 'clear_day';
-    if (code < 4) return 'cloudly_day';
-    if (code < 70) return 'rain';
-    return 'cloud';
-  }
+  String _getWeekday(int w) => ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][w % 7];
+  String _getDesc(int code) => code == 0 ? 'Tempo limpo' : (code < 4 ? 'Nublado' : 'Chuva');
+  String _getSlug(int code) => code == 0 ? 'clear_day' : (code < 4 ? 'cloud' : 'rain');
 }
